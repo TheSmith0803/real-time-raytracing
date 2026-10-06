@@ -7,6 +7,8 @@
 #include<iostream>
 #include<cerrno>
 
+#include "shader.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 std::string get_file_contents(const char* filename);
@@ -56,12 +58,10 @@ int main() {
 		return -1;
 	}
 
-
-
 	//first two params set the location of the bottom left corner of the window
 	glViewport(0, 0, 800, 600);
 
-
+	shader ray_trace_shader("rt.vert", "rt.frag");
 
 	//very simple render loop
 	while (!glfwWindowShouldClose(window))
@@ -82,8 +82,6 @@ int main() {
 		glfwPollEvents();
 	}
 
-
-
 	glfwTerminate();
 	return 0;
 }
@@ -103,23 +101,4 @@ void processInput(GLFWwindow* window)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
-}
-
-// function for loading in shader files, did not feel like writing this every time
-// ------------------------------------
-std::string get_file_contents(const char* filename)
-{
-	std::ifstream in(filename, std::ios::binary);
-	if (in)
-	{
-		std::string contents;
-		in.seekg(0, std::ios::end);
-		contents.resize(in.tellg());
-		in.seekg(0, std::ios::beg);
-		in.read(&contents[0], contents.size());
-		in.close();
-		return(contents);
-	}
-	std::cout << "ERROR? Make sure you typed the shader file namer correctly..." << std::endl;
-	throw(errno);
 }
