@@ -9,16 +9,19 @@ public:
 	shader(const char* vertexShaderCode, const char* fragmentShadeCode)
 	{
 		//get the shader files as strings and convert them to c style strings
-		const char* vertexShaderSource = get_file_contents(vertexShaderCode).c_str();
-		const char* fragmentShaderSource = get_file_contents(fragmentShadeCode).c_str();
+		std::string vertexShader = get_file_contents(vertexShaderCode);
+		std::string fragmentShader = get_file_contents(fragmentShadeCode);
+
+		const char* vertexShaderSource = vertexShader.c_str();
+		const char* fragmentShaderSource = fragmentShader.c_str();
 
 		//compile shaders and check for errors
 		unsigned int vertex = glCreateShader(GL_VERTEX_SHADER);
 		unsigned int fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
 		glShaderSource(vertex, 1, &vertexShaderSource, NULL);
-		glShaderSource(fragment, 1, &fragmentShaderSource, NULL);
 		glCompileShader(vertex);
+		glShaderSource(fragment, 1, &fragmentShaderSource, NULL);
 		glCompileShader(fragment);
 
 		ID = glCreateProgram();
