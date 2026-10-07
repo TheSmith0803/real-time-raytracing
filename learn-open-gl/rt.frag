@@ -2,7 +2,15 @@
 
 out vec4 FragColor;
 in vec2 uv;
-in float ar;
+
+uniform vec3 cam_center;
+uniform vec3 cam_front;
+
+uniform float ar;
+uniform int w;
+uniform int h;
+
+const float focal_length = 1.0f;
 
 struct Sphere {
 	vec3 center;
@@ -14,26 +22,21 @@ struct Ray {
 	vec3 dir;
 };
 
-Ray ray;
-Sphere sphere;
-
-
+vec3 at(Ray ray, float t) {
+	return ray.origin + (ray.dir*t);
+}
 
 void main() {
-	ray.origin = vec3(0.0f);
+	vec3 cur_pix = vec3(w * uv.x, h * uv.y, -focal_length);
+	
+	//construct a ray to cast into the scene
+	Ray ray;
+	ray.origin = cam_center;
+	ray.dir = cur_pix;
 
-	sphere.center = vec3(0.5,0.5, -0.5f);
-	sphere.radius = 0.2;
 
-	vec3 p = vec3(uv, 0.0f) - sphere.center;
-	p.x *= ar;
-
-	float dist = length(p);
 
 	float rg = min(1.0f - (uv.y * 0.8f), 0.6f);	
 
-	if (dist < sphere.radius)
-		FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	else
-		FragColor = vec4(rg, rg, 1.0f, 1.0f);
+	FragColor = vec4(rg, rg, 1.0f, 1.0f);
 }

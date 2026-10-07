@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include<string>
@@ -70,6 +71,9 @@ int main() {
 		return -1;
 	}
 
+	glm::vec3 cam_center = glm::vec3(0.0f);
+	glm::vec3 cam_front = glm::vec3(0.0f, 0.0f, -1.0f);
+
 	//first two params set the location of the bottom left corner of the window
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
@@ -112,8 +116,11 @@ int main() {
 		///* rendering commands here *///
 		/////////////////////////////////
 		ray_trace_shader.activate();
-		unsigned int loc = glGetUniformLocation(ray_trace_shader.ID, "u_aspect_ratio");
-		glUniform1f(loc, aspect_ratio);
+		glUniform1f(glGetUniformLocation(ray_trace_shader.ID, "ar"), aspect_ratio);
+		glUniform1i(glGetUniformLocation(ray_trace_shader.ID, "w"), SCR_WIDTH);
+		glUniform1i(glGetUniformLocation(ray_trace_shader.ID, "h"), SCR_HEIGHT);
+		glUniform3f(glGetUniformLocation(ray_trace_shader.ID, "cam_center"), cam_center.x, cam_center.y, cam_center.z);
+		glUniform3f(glGetUniformLocation(ray_trace_shader.ID, "cam_front"), cam_front.x, cam_front.y, cam_front.z);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
